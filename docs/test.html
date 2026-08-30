@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoWebP — Test Lab</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    line-height: 1.6;
+    color: #1c1c1e;
+    background: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e5e5e7; background: #121214; }
+    a { color: #6cb4ff; }
+    .case, .notice { border-color: #333; background: #1a1a1c; }
+    .thumb { background: #222; }
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .lede { color: #737378; margin-top: 0; margin-bottom: 1.5rem; }
+  nav { margin-bottom: 2rem; font-size: 0.9rem; }
+  nav a { margin-right: 1rem; }
+  .notice {
+    border: 1px solid #e0b84a;
+    background: #fff8e6;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+  .case {
+    border: 1px solid #d8d8dc;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.25rem;
+  }
+  .thumb {
+    width: 140px;
+    height: 105px;
+    background: #f2f2f4;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .case h2 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+  .case .actions { margin: 0.6rem 0; }
+  .case .actions a {
+    display: inline-block;
+    margin-right: 0.75rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #c9c9cf;
+    border-radius: 6px;
+  }
+  .expect { font-size: 0.9rem; }
+  .expect ul { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+  @media (max-width: 560px) {
+    .case { grid-template-columns: 1fr; }
+    .thumb { width: 100%; height: 140px; }
+  }
+</style>
+</head>
+<body>
+<nav><a href="index.html">Home</a><a href="privacy.html">Privacy Policy</a><a href="https://github.com/iknoest/NoWebP">GitHub</a></nav>
+
+<h1>NoWebP Test Lab</h1>
+<p class="lede">Known WebP samples with the exact behavior you should see if NoWebP is installed
+and working. Load <code>extension/</code> as an unpacked extension first — see the
+<a href="https://github.com/iknoest/NoWebP#manual-installation-for-testing-before-chrome-web-store-availability">README</a>.</p>
+
+<div class="notice">
+  <strong>Known limitation:</strong> Chrome's built-in right-click <strong>&ldquo;Copy
+  Image&rdquo;</strong> command is outside NoWebP's supported interception path — Chrome does not
+  expose an event NoWebP can use there. Use NoWebP's own <strong>&ldquo;Copy image as
+  PNG&rdquo;</strong> menu entry for a right-click copy workflow instead.
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/static-alpha.webp" alt="Static WebP with alpha channel"></div>
+  <div>
+    <h2>Static WebP with alpha</h2>
+    <p>A standalone static WebP image using transparency (VP8X container, alpha flag set).</p>
+    <div class="actions">
+      <a href="samples/static-alpha.webp">View standalone image</a>
+      <a href="samples/static-alpha.webp" download>Download test file</a>
+    </div>
+    <div class="expect">Expected:
+      <ul>
+        <li>Downloading the file becomes a PNG</li>
+        <li>Opening it standalone, then <code>Ctrl+C</code> / <code>⌘C</code>, pastes as PNG</li>
+        <li>Right-click → NoWebP → <em>Copy image as PNG</em> works</li>
+        <li>Right-click → NoWebP → <em>Save image as PNG…</em> works</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/static-vp8.webp" alt="Static lossy VP8 WebP"></div>
+  <div>
+    <h2>Static lossy WebP (VP8)</h2>
+    <p>A simple lossy static WebP (VP8 bitstream, no alpha).</p>
+    <div class="actions">
+      <a href="samples/static-vp8.webp">View standalone image</a>
+      <a href="samples/static-vp8.webp" download>Download test file</a>
+    </div>
+    <div class="expect">Expected: supported static WebP behavior — same four checks as above all pass.</div>
+  </div>
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/static-vp8l.webp" alt="Static lossless VP8L WebP"></div>
+  <div>
+    <h2>Static lossless WebP (VP8L)</h2>
+    <p>A simple lossless static WebP (VP8L bitstream).</p>
+    <div class="actions">
+      <a href="samples/static-vp8l.webp">View standalone image</a>
+      <a href="samples/static-vp8l.webp" download>Download test file</a>
+    </div>
+    <div class="expect">Expected: supported static WebP behavior — same four checks as above all pass.</div>
+  </div>
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/animated.webp" alt="Animated WebP"></div>
+  <div>
+    <h2>Animated WebP</h2>
+    <p>An animated WebP (VP8X container, animation flag set). NoWebP must leave this alone.</p>
+    <div class="actions">
+      <a href="samples/animated.webp">View standalone image</a>
+      <a href="samples/animated.webp" download>Download test file</a>
+    </div>
+    <div class="expect">Expected: remains WebP everywhere — download, copy, and save all leave it
+      unconverted. NoWebP does not touch animated WebP.</div>
+  </div>
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/control.png" alt="Control PNG"></div>
+  <div>
+    <h2>Control: PNG</h2>
+    <p>An ordinary PNG — not a WebP at all.</p>
+    <div class="actions">
+      <a href="samples/control.png">View standalone image</a>
+      <a href="samples/control.png" download>Download test file</a>
+    </div>
+    <div class="expect">Expected: untouched — NoWebP does not act on non-WebP content.</div>
+  </div>
+</div>
+
+<div class="case">
+  <div class="thumb"><img src="samples/control.jpg" alt="Control JPEG"></div>
+  <div>
+    <h2>Control: JPEG</h2>
+    <p>An ordinary JPEG — not a WebP at all.</p>
+    <div class="actions">
+      <a href="samples/control.jpg">View standalone image</a>
+      <a href="samples/control.jpg" download>Download test file</a>
+    </div>
+    <div class="expect">Expected: untouched — NoWebP does not act on non-WebP content.</div>
+  </div>
+</div>
+
+</body>
+</html>

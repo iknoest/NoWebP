@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoWebP — Privacy Policy</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    line-height: 1.6;
+    color: #1c1c1e;
+    background: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e5e5e7; background: #121214; }
+    a { color: #6cb4ff; }
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  h2 { font-size: 1.1rem; margin-top: 2rem; }
+  .meta { color: #737378; font-size: 0.9rem; margin-bottom: 2rem; }
+  nav { margin-bottom: 2rem; font-size: 0.9rem; }
+  nav a { margin-right: 1rem; }
+  code { background: rgba(127,127,127,0.15); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.92em; }
+</style>
+</head>
+<body>
+<nav><a href="index.html">Home</a><a href="test.html">Test lab</a><a href="https://github.com/iknoest/NoWebP">GitHub</a></nav>
+
+<h1>NoWebP Privacy Policy</h1>
+<p class="meta">Product: NoWebP (Chrome extension) &middot; Effective date: 2026-08-30 &middot; Last updated: 2026-08-30</p>
+
+<p>NoWebP is a Chrome extension whose single purpose is to make confirmed static WebP images
+usable as PNG when downloading, copying, or saving them. Processing occurs locally in Chrome.</p>
+
+<h2>Information handled</h2>
+<p>To provide this functionality, NoWebP handles the source image URL, relevant Chrome download
+metadata, source image bytes, the locally generated PNG, and the user's relevant download,
+trusted copy, or NoWebP context-menu action. When NoWebP retrieves a source image, Chrome may
+attach cookies or other credentials applicable to that image's originating website. NoWebP does
+not read those credential values. NoWebP does not read clipboard contents.</p>
+
+<h2>How the information is used</h2>
+<p>This information is used only to locate and retrieve the source image, confirm from its bytes
+whether it is a supported static WebP, convert it locally to PNG, and complete the requested
+download, copy, or save operation. Animated WebP, unsupported content, and uncertain inputs are
+left unchanged.</p>
+
+<h2>Network disclosure</h2>
+<p>NoWebP contacts the source image's existing originating website only as necessary to retrieve
+that image, and only over HTTPS. HTTP sources are left to Chrome unchanged; NoWebP does not
+re-fetch them or rewrite them to HTTPS. The HTTPS origin receives the normal image request and
+any origin-applicable credentials Chrome attaches. No image, URL, clipboard, credential,
+download, or browsing/activity information is sent to the NoWebP developer or to an additional
+analytics, advertising, conversion, data-broker, or cloud service.</p>
+
+<h2>Storage and retention</h2>
+<p>NoWebP does not maintain persistent storage of source URLs, image bytes, generated PNG data,
+clipboard contents or history, credentials, download metadata, browsing activity, user actions,
+timestamps, or diagnostic records. Temporary URL/image/PNG data exists only in Chrome memory for
+the requested operation and is discarded with the relevant page or extension execution context.
+Files the user downloads and Chrome's normal Downloads entries remain under the user's and
+browser's control.</p>
+
+<h2>Clipboard</h2>
+<p>NoWebP requests <code>clipboardWrite</code> only. It writes a locally generated PNG for an
+eligible trusted standalone-image keyboard copy or after the user chooses "Copy image as PNG." It
+does not request <code>clipboardRead</code>, inspect existing clipboard content, or keep
+clipboard history.</p>
+
+<h2>Advertising and sharing</h2>
+<p>NoWebP has no advertising or analytics. It does not sell user data, use it for profiling,
+advertising, creditworthiness, or lending, or share it with data brokers or other additional
+third parties. The developer and other humans cannot access or read the data handled locally by
+the extension.</p>
+
+<h2>Remote processing and code</h2>
+<p>NoWebP uses no cloud processing or native helper. All executable logic is packaged in the
+extension. Retrieved source images are data for local conversion and are not executed as
+code.</p>
+
+<h2>Contact / support</h2>
+<p>Questions about this policy or NoWebP's behavior can be raised via this project's
+<a href="https://github.com/iknoest/NoWebP/issues">GitHub Issues</a> page.</p>
+
+</body>
+</html>

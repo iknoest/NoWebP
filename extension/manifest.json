@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "NoWebP",
+  "version": "0.1.0",
+  "description": "Converts static WebP downloads to PNG and supports PNG copy/save fallbacks.",
+  "minimum_chrome_version": "99",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "background": { "service_worker": "src/background/service-worker.js" },
+  "permissions": ["downloads", "scripting", "contextMenus", "clipboardWrite"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/clipboard/keyboard-copy.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
