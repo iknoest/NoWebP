@@ -13,8 +13,8 @@ confident the source is a static (non-animated) WebP image.
   as PNG instead.
 - **Keyboard copy** — press `Ctrl+C` / `⌘C` on a standalone static WebP image (an image open by
   itself in a tab) and the clipboard receives PNG image data.
-- **Right-click → "Copy image as PNG"** — explicit PNG copy from NoWebP's own context-menu entry.
-- **Right-click → "Save image as PNG…"** — explicit PNG save, with one native Chrome save dialog.
+- **Right-click → "Copy WebP as PNG"** — explicit PNG copy from NoWebP's own context-menu entry.
+- **Right-click → "Save WebP as PNG…"** — explicit PNG save, with one native Chrome save dialog.
 
 Animated WebP is left untouched. Anything NoWebP isn't confident about is left untouched too —
 when in doubt, it does nothing rather than risk your data.
@@ -24,7 +24,7 @@ when in doubt, it does nothing rather than risk your data.
 Chrome's **built-in** right-click **"Copy Image"** command is **not** modified by NoWebP — this
 is a current Chrome platform limitation, not a bug in this extension. Chrome does not expose a
 page-visible event that NoWebP can use to intercept that specific native command. If you need a
-right-click copy workflow, use NoWebP's own **"Copy image as PNG"** entry instead.
+right-click copy workflow, use NoWebP's own **"Copy WebP as PNG"** entry instead.
 
 ## Manual installation (for testing / before Chrome Web Store availability)
 
