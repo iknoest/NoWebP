@@ -261,6 +261,82 @@ function injectCopyPngToClipboard(pngDataUrl) {
     .catch(e => ({ ok: false, err: String(e) }));
 }
 
+// Injected via chrome.scripting.executeScript. Self-contained in-page toast with
+// auto-dismiss animation. Never throws; best-effort only.
+function injectToastNotification(message) {
+  try {
+    const id = 'nowebp-toast-notification';
+    const existing = document.getElementById(id);
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = id;
+    toast.textContent = message;
+    Object.assign(toast.style, {
+      position: 'fixed',
+      top: '24px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: '2147483647',
+      backgroundColor: 'rgba(30, 30, 30, 0.92)',
+      color: '#ffffff',
+      padding: '10px 18px',
+      borderRadius: '8px',
+      fontSize: '13px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+      pointerEvents: 'none',
+      opacity: '0',
+      transition: 'opacity 0.2s ease-in-out',
+      maxWidth: '420px',
+      textAlign: 'center',
+      lineHeight: '1.4'
+    });
+    (document.body || document.documentElement).appendChild(toast);
+    void toast.offsetHeight;
+    toast.style.opacity = '1';
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 300);
+    }, 3000);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, err: String(e) };
+  }
+}
+
+async function showToast(tabId, message) {
+  if (tabId == null || tabId < 0) return { ok: false, reason: 'no-tab' };
+  try {
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: injectToastNotification,
+      args: [message]
+    });
+    return result || { ok: false, reason: 'no-result' };
+  } catch (e) {
+    return { ok: false, reason: 'inject-failed', err: String(e) };
+  }
+}
+
+async function executeClipboardWrite(tabId, dataUrl) {
+  if (tabId == null || tabId < 0) return { ok: false, reason: 'no-tab' };
+  try {
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: injectCopyPngToClipboard,
+      args: [dataUrl]
+    });
+    return result || { ok: false, reason: 'no-result' };
+  } catch (e) {
+    // Focus lost, tab closed, or injection blocked — leave Chrome's clipboard untouched.
+    return { ok: false, reason: 'inject-failed', err: String(e) };
+  }
+}
+
 // Named (rather than inlined into the listener) so the test harness can drive the
 // exact production logic via CDP Runtime.evaluate — headless/CDP cannot render or
 // click a native context menu, so this is the strongest automated entry point
@@ -268,25 +344,54 @@ function injectCopyPngToClipboard(pngDataUrl) {
 // PowerPoint Web itself is automatable").
 async function runCopyAsPngFallback(srcUrl, tabId) {
   const sn = await sniff(srcUrl, CFG.sniffTimeoutMs);
-  if (!sn.ok) return { ok: false, reason: sn.reason || 'sniff-failed' }; // FAIL-SAFE
+  if (!sn.ok) {
+    if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+    return { ok: false, reason: sn.reason || 'sniff-failed' };
+  }
 
   const cls = classify(sn.bytes);
-  if (!cls.webp || cls.animated !== false) return { ok: false, reason: 'not-static-webp' };
+  const rt = realType(sn.bytes);
 
-  const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
-  if (!conv.ok) return { ok: false, reason: 'convert-failed', stage: conv.stage }; // FAIL-SAFE
-
-  try {
-    const [{ result }] = await chrome.scripting.executeScript({
-      target: { tabId },
-      func: injectCopyPngToClipboard,
-      args: [conv.url]
-    });
-    return result || { ok: false, reason: 'no-result' };
-  } catch (e) {
-    // Focus lost, tab closed, or injection blocked — leave Chrome's clipboard untouched.
-    return { ok: false, reason: 'inject-failed', err: String(e) };
+  // 1. Static WebP -> convert to PNG
+  if (cls.webp && cls.animated === false) {
+    const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
+    if (!conv.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'convert-failed', stage: conv.stage };
+    }
+    return await executeClipboardWrite(tabId, conv.url);
   }
+
+  // 2. Animated WebP -> do not flatten; show feedback
+  if (cls.webp && cls.animated !== false) {
+    if (tabId != null) await showToast(tabId, "Animated WebP can't be copied or saved as a static PNG.");
+    return { ok: false, reason: 'animated-webp' };
+  }
+
+  // 3. Real PNG -> passthrough raw bytes without re-encode
+  if (rt && rt.ext === 'png') {
+    const raw = await refetchRaw(srcUrl);
+    if (!raw.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'refetch-failed', stage: raw.stage };
+    }
+    const dataUrl = 'data:image/png;base64,' + abToBase64(raw.buf);
+    return await executeClipboardWrite(tabId, dataUrl);
+  }
+
+  // 4. Real JPEG -> convert to PNG
+  if (rt && rt.ext === 'jpg') {
+    const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
+    if (!conv.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'convert-failed', stage: conv.stage };
+    }
+    return await executeClipboardWrite(tabId, conv.url);
+  }
+
+  // 5. Unsupported / unrecognized image format
+  if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+  return { ok: false, reason: 'unsupported-format' };
 }
 
 // ============================================================================
@@ -298,24 +403,60 @@ async function runCopyAsPngFallback(srcUrl, tabId) {
 // dialog, and the user can still edit the filename and pick any folder. This is
 // deliberately NOT automatic: see the fail-safe guard in handle() and LESSONS.md
 // L28 for why the automatic path cannot safely do this itself.
-async function runSaveAsPngFallback(srcUrl, suggestedFilename) {
+async function runSaveAsPngFallback(srcUrl, suggestedFilename, tabId) {
   const sn = await sniff(srcUrl, CFG.sniffTimeoutMs);
-  if (!sn.ok) return { ok: false, reason: sn.reason || 'sniff-failed' };
+  if (!sn.ok) {
+    if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+    return { ok: false, reason: sn.reason || 'sniff-failed' };
+  }
 
   const cls = classify(sn.bytes);
-  if (!cls.webp || cls.animated !== false) return { ok: false, reason: 'not-static-webp' };
+  const rt = realType(sn.bytes);
 
-  const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
-  if (!conv.ok) return { ok: false, reason: 'convert-failed', stage: conv.stage };
+  let downloadDataUrl = null;
+
+  // 1. Static WebP -> convert to PNG
+  if (cls.webp && cls.animated === false) {
+    const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
+    if (!conv.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'convert-failed', stage: conv.stage };
+    }
+    downloadDataUrl = conv.url;
+  } else if (cls.webp && cls.animated !== false) {
+    // 2. Animated WebP -> do not flatten; show feedback
+    if (tabId != null) await showToast(tabId, "Animated WebP can't be copied or saved as a static PNG.");
+    return { ok: false, reason: 'animated-webp' };
+  } else if (rt && rt.ext === 'png') {
+    // 3. Real PNG -> passthrough raw bytes without re-encode
+    const raw = await refetchRaw(srcUrl);
+    if (!raw.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'refetch-failed', stage: raw.stage };
+    }
+    downloadDataUrl = 'data:image/png;base64,' + abToBase64(raw.buf);
+  } else if (rt && rt.ext === 'jpg') {
+    // 4. Real JPEG -> convert to PNG
+    const conv = await convertToPng(srcUrl, { maxPixels: CFG.maxPixels });
+    if (!conv.ok) {
+      if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+      return { ok: false, reason: 'convert-failed', stage: conv.stage };
+    }
+    downloadDataUrl = conv.url;
+  } else {
+    // 5. Unsupported format
+    if (tabId != null) await showToast(tabId, "This image couldn't be converted to PNG.");
+    return { ok: false, reason: 'unsupported-format' };
+  }
 
   const pngName = swapExt(baseName(suggestedFilename) || 'image.webp', 'png');
   // Self-recursion guard re-assertion (LESSONS.md L3) applies here too: without this,
   // Chrome would ignore the filename we pass to downloads.download below and the
   // save dialog would show a UUID instead of a meaningful suggested name.
-  selfInitiated.set(conv.url, pngName);
+  selfInitiated.set(downloadDataUrl, pngName);
   try {
     const id = await new Promise((resolve, reject) => {
-      chrome.downloads.download({ url: conv.url, filename: pngName, saveAs: true }, (downloadId) => {
+      chrome.downloads.download({ url: downloadDataUrl, filename: pngName, saveAs: true }, (downloadId) => {
         if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
         else resolve(downloadId);
       });
@@ -332,7 +473,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     runCopyAsPngFallback(info.srcUrl, tab.id);
   } else if (info.menuItemId === MENU_ID_SAVE) {
     const suggested = baseName(new URL(info.srcUrl, tab.url).pathname) || 'image.webp';
-    runSaveAsPngFallback(info.srcUrl, suggested);
+    runSaveAsPngFallback(info.srcUrl, suggested, tab.id);
   }
 });
 

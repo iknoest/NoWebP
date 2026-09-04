@@ -31,10 +31,11 @@
 <nav><a href="index.html">Home</a><a href="test.html">Test lab</a><a href="https://github.com/iknoest/NoWebP">GitHub</a></nav>
 
 <h1>NoWebP Privacy Policy</h1>
-<p class="meta">Product: NoWebP (Chrome extension) &middot; Effective date: 2026-08-30 &middot; Last updated: 2026-08-30</p>
+<p class="meta">Product: NoWebP: WebP to PNG, Copy & Save as PNG (Chrome extension) &middot; Effective date: 2026-08-31 &middot; Last updated: 2026-08-31</p>
 
-<p>NoWebP is a Chrome extension whose single purpose is to make confirmed static WebP images
-usable as PNG when downloading, copying, or saving them. Processing occurs locally in Chrome.</p>
+<p>NoWebP is a Chrome extension whose purpose is to ensure static web image compatibility by providing
+PNG clipboard copy and PNG downloads, with automatic conversion for static WebP. Processing occurs
+locally in Chrome.</p>
 
 <h2>Information handled</h2>
 <p>To provide this functionality, NoWebP handles the source image URL, relevant Chrome download
@@ -44,8 +45,8 @@ attach cookies or other credentials applicable to that image's originating websi
 not read those credential values. NoWebP does not read clipboard contents.</p>
 
 <h2>How the information is used</h2>
-<p>This information is used only to locate and retrieve the source image, confirm from its bytes
-whether it is a supported static WebP, convert it locally to PNG, and complete the requested
+<p>This information is used only to locate and retrieve the source image, confirm its format from bytes,
+convert or normalize supported static images (WebP, PNG, JPEG) locally to PNG, and complete the requested
 download, copy, or save operation. Animated WebP, unsupported content, and uncertain inputs are
 left unchanged.</p>
 
@@ -67,7 +68,7 @@ browser's control.</p>
 
 <h2>Clipboard</h2>
 <p>NoWebP requests <code>clipboardWrite</code> only. It writes a locally generated PNG for an
-eligible trusted standalone-image keyboard copy or after the user chooses "Copy WebP as PNG." It
+eligible trusted standalone-image keyboard copy or after the user chooses “Copy image as PNG.” It
 does not request <code>clipboardRead</code>, inspect existing clipboard content, or keep
 clipboard history.</p>
 

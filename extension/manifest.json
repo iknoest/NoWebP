@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "NoWebP",
+  "name": "NoWebP: WebP to PNG, Copy & Save as PNG",
+  "short_name": "NoWebP",
   "version": "0.1.0",
   "description": "Converts static WebP downloads to PNG and supports PNG copy/save fallbacks.",
   "minimum_chrome_version": "99",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NoWebP — Test Lab</title>
+<title>NoWebP: WebP to PNG, Copy & Save as PNG — Test Lab</title>
 <style>
   :root { color-scheme: light dark; }
   body {
@@ -76,37 +76,40 @@
 <nav><a href="index.html">Home</a><a href="privacy.html">Privacy Policy</a><a href="https://github.com/iknoest/NoWebP">GitHub</a></nav>
 
 <h1>NoWebP Test Lab</h1>
-<p class="lede">Known WebP samples with the exact behavior you should see if NoWebP is installed
-and working. Load <code>extension/</code> as an unpacked extension first — see the
+<p class="lede">Known samples with the exact behavior you should see when NoWebP is active. Load <code>extension/</code> as an unpacked extension first — see the
 <a href="https://github.com/iknoest/NoWebP#manual-installation-for-testing-before-chrome-web-store-availability">README</a>.</p>
 
-<p class="lede">All sample files on this page are synthetic test patterns generated for this
-project — not third-party photographs — so there are no external licensing questions. Each one
-is encoded with the official <code>libwebp</code> tools and its container bytes were verified
-against the exact codec/feature case it's meant to test.</p>
-
 <div class="notice">
-  <strong>Known limitation:</strong> Chrome's built-in right-click <strong>&ldquo;Copy
-  Image&rdquo;</strong> command is outside NoWebP's supported interception path — Chrome does not
-  expose an event NoWebP can use there. Use NoWebP's own <strong>&ldquo;Copy WebP as
-  PNG&rdquo;</strong> menu entry for a right-click copy workflow instead.
+  <strong>How NoWebP works:</strong>
+  <ul style="margin: 0.5rem 0 0; padding-left: 1.2rem;">
+    <li><strong>Automatic conversion:</strong> Ordinary downloads of <strong>static WebP</strong> images automatically save as PNG. Non-WebP images and animated WebP are left untouched automatically.</li>
+    <li><strong>Standalone keyboard copy:</strong> When viewing a static WebP image by itself in a browser tab, pressing <code>⌘C</code> / <code>Ctrl+C</code> copies PNG image data to your clipboard.</li>
+    <li><strong>Explicit context menu:</strong> Right-clicking an image gives you NoWebP's menu actions:
+      <ul style="margin: 0.2rem 0; padding-left: 1.2rem;">
+        <li><strong>Copy image as PNG:</strong> copies static WebP and JPEG as PNG, and passes through PNG.</li>
+        <li><strong>Save image as PNG…:</strong> saves static WebP and JPEG as PNG, and saves PNG via a standard save dialog.</li>
+      </ul>
+    </li>
+    <li><strong>Animated WebP:</strong> Animation is not flattened to static PNG. Copy/Save as static PNG is not supported for animated WebP; an explanatory notice is shown at the top of the page, and your clipboard/downloads remain untouched.</li>
+    <li><strong>Chrome limitation:</strong> Chrome's built-in right-click <em>&ldquo;Copy Image&rdquo;</em> command is outside NoWebP's control due to browser platform limitations. Use NoWebP's <em>&ldquo;Copy image as PNG&rdquo;</em> menu item instead.</li>
+  </ul>
 </div>
 
 <div class="case">
   <div class="thumb"><img src="samples/static-alpha.webp" alt="Static WebP with alpha channel"></div>
   <div>
-    <h2>Static WebP with alpha</h2>
-    <p>A standalone static WebP image using transparency (VP8X container, alpha flag set).</p>
+    <h2>1. Static WebP with alpha</h2>
+    <p>A static WebP image with transparency.</p>
     <div class="actions">
       <a href="samples/static-alpha.webp">View standalone image</a>
       <a href="samples/static-alpha.webp" download>Download test file</a>
     </div>
-    <div class="expect">Expected:
+    <div class="expect"><strong>Expected:</strong>
       <ul>
-        <li>Downloading the file becomes a PNG</li>
-        <li>Opening it standalone, then <code>Ctrl+C</code> / <code>⌘C</code>, pastes as PNG</li>
-        <li>Right-click → NoWebP → <em>Copy WebP as PNG</em> works</li>
-        <li>Right-click → NoWebP → <em>Save WebP as PNG…</em> works</li>
+        <li>Downloading the file saves as a valid <code>.png</code>.</li>
+        <li>Viewing standalone and pressing <code>⌘C</code> / <code>Ctrl+C</code> copies as PNG (pastes into PowerPoint Web).</li>
+        <li>Right-click ➔ <em>Copy image as PNG</em> copies as PNG.</li>
+        <li>Right-click ➔ <em>Save image as PNG…</em> opens one save dialog prefilled with <code>.png</code>.</li>
       </ul>
     </div>
   </div>
@@ -115,66 +118,70 @@ against the exact codec/feature case it's meant to test.</p>
 <div class="case">
   <div class="thumb"><img src="samples/static-vp8.webp" alt="Static lossy VP8 WebP"></div>
   <div>
-    <h2>Static lossy WebP (VP8)</h2>
-    <p>A simple lossy static WebP (VP8 bitstream, no alpha).</p>
+    <h2>2. Static lossy WebP (VP8)</h2>
+    <p>A standard static lossy WebP image.</p>
     <div class="actions">
       <a href="samples/static-vp8.webp">View standalone image</a>
       <a href="samples/static-vp8.webp" download>Download test file</a>
     </div>
-    <div class="expect">Expected: supported static WebP behavior — same four checks as above all pass.</div>
+    <div class="expect"><strong>Expected:</strong> Supported static WebP — automatic download, standalone keyboard copy, <em>Copy image as PNG</em>, and <em>Save image as PNG…</em> all produce PNG.</div>
   </div>
 </div>
 
 <div class="case">
   <div class="thumb"><img src="samples/static-vp8l.webp" alt="Static lossless VP8L WebP"></div>
   <div>
-    <h2>Static lossless WebP (VP8L)</h2>
-    <p>A simple lossless static WebP (VP8L bitstream).</p>
+    <h2>3. Static lossless WebP (VP8L)</h2>
+    <p>A lossless static WebP image.</p>
     <div class="actions">
       <a href="samples/static-vp8l.webp">View standalone image</a>
       <a href="samples/static-vp8l.webp" download>Download test file</a>
     </div>
-    <div class="expect">Expected: supported static WebP behavior — same four checks as above all pass.</div>
+    <div class="expect"><strong>Expected:</strong> Supported static WebP — automatic download, standalone keyboard copy, <em>Copy image as PNG</em>, and <em>Save image as PNG…</em> all produce PNG.</div>
   </div>
 </div>
 
 <div class="case">
   <div class="thumb"><img src="samples/animated.webp" alt="Animated WebP"></div>
   <div>
-    <h2>Animated WebP</h2>
-    <p>An animated WebP (VP8X container, animation flag set). NoWebP must leave this alone.</p>
+    <h2>4. Animated WebP</h2>
+    <p>An animated WebP image. NoWebP preserves the animation and does not flatten it to static PNG.</p>
     <div class="actions">
       <a href="samples/animated.webp">View standalone image</a>
       <a href="samples/animated.webp" download>Download test file</a>
     </div>
-    <div class="expect">Expected: remains WebP everywhere — download, copy, and save all leave it
-      unconverted. NoWebP does not touch animated WebP.</div>
+    <div class="expect"><strong>Expected:</strong>
+      <ul>
+        <li>Automatic download and keyboard copy remain unchanged as original animated <code>.webp</code>.</li>
+        <li>Copy / Save as static PNG is not supported for animated WebP. Right-clicking and selecting <em>Copy image as PNG</em> or <em>Save image as PNG…</em> leaves clipboard/download untouched and shows a top notice: <em>&ldquo;Animated WebP can't be copied or saved as a static PNG.&rdquo;</em></li>
+      </ul>
+    </div>
   </div>
 </div>
 
 <div class="case">
   <div class="thumb"><img src="samples/control.png" alt="Control PNG"></div>
   <div>
-    <h2>Control: PNG</h2>
-    <p>An ordinary PNG — not a WebP at all.</p>
+    <h2>5. Control: Real PNG</h2>
+    <p>An ordinary PNG image.</p>
     <div class="actions">
       <a href="samples/control.png">View standalone image</a>
       <a href="samples/control.png" download>Download test file</a>
     </div>
-    <div class="expect">Expected: untouched — NoWebP does not act on non-WebP content.</div>
+    <div class="expect"><strong>Expected:</strong> Copy image as PNG copies it as PNG. Save image as PNG… saves it as PNG. Automatic behavior is unchanged.</div>
   </div>
 </div>
 
 <div class="case">
   <div class="thumb"><img src="samples/control.jpg" alt="Control JPEG"></div>
   <div>
-    <h2>Control: JPEG</h2>
-    <p>An ordinary JPEG — not a WebP at all.</p>
+    <h2>6. Control: Real JPEG</h2>
+    <p>An ordinary JPEG image.</p>
     <div class="actions">
       <a href="samples/control.jpg">View standalone image</a>
       <a href="samples/control.jpg" download>Download test file</a>
     </div>
-    <div class="expect">Expected: untouched — NoWebP does not act on non-WebP content.</div>
+    <div class="expect"><strong>Expected:</strong> Copy image as PNG copies it as PNG. Save image as PNG… saves it as PNG. Automatic behavior is unchanged.</div>
   </div>
 </div>
 
