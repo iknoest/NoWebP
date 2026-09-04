@@ -1,6 +1,6 @@
 # NoWebP
 
-**WebP to PNG Chrome extension for downloads, clipboard copy, and Copy / Save as PNG workflows.**
+**Chrome extension for WebP to PNG. Copy, save, and download WebP images as PNG without a converter website.**
 
 > No converter website. No format check. No unnecessary interruption. Just keep working.
 
