@@ -1,5 +1,6 @@
 # NoWebP
-**WebP to PNG, Copy & Save as PNG**
+
+**WebP to PNG Chrome extension for downloads, clipboard copy, and Copy / Save as PNG workflows.**
 
 > No converter website. No format check. No unnecessary interruption. Just keep working.
 
@@ -43,7 +44,7 @@ The goal stays simple:
 
 Because NoWebP interacts directly with browser-native context menus, downloads, and the system clipboard, it cannot be tested within a static GitHub markdown page. Instead, a real, interactive test suite is published on GitHub Pages:
 
-**[Open the NoWebP Test Lab](https://iknoest.github.io/NoWebP/test.html)**
+**[Launch NoWebP Test Lab](https://iknoest.github.io/NoWebP/test.html)**
 
 ### Quick 4-step walkthrough:
 1. **Load NoWebP** in Chrome (`chrome://extensions` → enable *Developer mode* → *Load unpacked* → choose `extension/`).
@@ -86,7 +87,7 @@ NoWebP should now appear in your extensions list and is ready to use.
 
 ## Privacy
 
-Image conversion runs locally in Chrome. NoWebP uses no cloud conversion, analytics, tracking, or developer-operated processing service.
+NoWebP operates entirely locally within your browser.
 - No analytics, tracking, or telemetry
 - No cloud conversion or remote code execution
 - No persistent storage of image history or clipboard data
