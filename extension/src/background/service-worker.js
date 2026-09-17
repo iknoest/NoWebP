@@ -244,11 +244,14 @@ async function handle(item, suggest) {
 const MENU_ID = 'nowebp-copy-as-png';
 const MENU_ID_SAVE = 'nowebp-save-as-png';
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({ id: MENU_ID, title: 'Copy image as PNG', contexts: ['image'] });
     chrome.contextMenus.create({ id: MENU_ID_SAVE, title: 'Save image as PNG…', contexts: ['image'] });
   });
+  if (details && details.reason === 'install') {
+    chrome.tabs.create({ url: 'welcome.html' });
+  }
 });
 
 // Runs inside the focused tab via chrome.scripting.executeScript. Self-contained —

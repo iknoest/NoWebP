@@ -32,8 +32,13 @@
     text-decoration: none;
     color: inherit;
   }
-  .card strong { display: block; font-size: 1.05rem; }
-  .card span { color: #737378; font-size: 0.9rem; }
+  .card.primary {
+    border-color: #2e7d32;
+    background: rgba(46, 125, 50, 0.04);
+  }
+  .card.primary strong {
+    color: #2e7d32;
+  }
 </style>
 </head>
 <body>
@@ -42,6 +47,10 @@
 download, copy, and save.</p>
 
 <div class="links">
+  <a class="card primary" href="https://chromewebstore.google.com/detail/nowebp-webp-to-png-copy-s/hbphcpflnkpnjfcggfdmofklbpamindj" target="_blank" rel="noopener">
+    <strong>Install from Chrome Web Store →</strong>
+    <span>Add NoWebP to Chrome from the official Chrome Web Store.</span>
+  </a>
   <a class="card" href="test.html">
     <strong>Test NoWebP →</strong>
     <span>A public test lab with known WebP samples and expected results.</span>

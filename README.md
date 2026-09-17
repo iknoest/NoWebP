@@ -1,6 +1,6 @@
 # NoWebP
 
-**Chrome extension for WebP to PNG. Copy, save, and download WebP images as PNG without a converter website.**
+**WebP to PNG Chrome extension for downloads, clipboard copy, and Copy / Save as PNG workflows.**
 
 > No converter website. No format check. No unnecessary interruption. Just keep working.
 
@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="https://chromewebstore.google.com/detail/nowebp-webp-to-png-copy-s/hbphcpflnkpnjfcggfdmofklbpamindj"><b>Install from Chrome Web Store</b></a> &nbsp;·&nbsp;
   <a href="https://iknoest.github.io/NoWebP/test.html"><b>Test Lab</b></a> &nbsp;·&nbsp;
   <a href="https://iknoest.github.io/NoWebP/privacy.html"><b>Privacy Policy</b></a> &nbsp;·&nbsp;
   <a href="https://github.com/iknoest/NoWebP/issues"><b>Issues & Support</b></a>
@@ -73,8 +74,12 @@ Because NoWebP interacts directly with browser-native context menus, downloads, 
 
 ---
 
-## Manual installation (unpacked extension)
+## Installation
 
+### Primary: Install from Chrome Web Store
+Install directly from the official **[Chrome Web Store listing](https://chromewebstore.google.com/detail/nowebp-webp-to-png-copy-s/hbphcpflnkpnjfcggfdmofklbpamindj)**.
+
+### Development / manual installation (unpacked extension)
 1. Clone or download this repository.
 2. Open `chrome://extensions` in Chrome.
 3. Enable **Developer mode** (top-right toggle).
